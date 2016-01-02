@@ -118,7 +118,7 @@ function move_elem(elem, x, y, distance, speed, callback)    {
                         eat_elem($(this), elem);
             });
             elem.data('count', elem.data('count') + 1);
-            if (elem.data('count') % 10 == 0)
+            if (elem.data('count') % 10 === 0)
                 if (elem == duck)
                     resize_elem(elem, get_elem_width(elem) * 0.999, elem.data('ratio'));
                 else resize_elem(elem, get_elem_width(elem) * 0.9999, elem.data('ratio'));
@@ -163,7 +163,7 @@ function add_fish() {
         resize_elem($(this), duck.outerWidth() / 4.0 + duck.outerWidth() * Math.random(), ratio);
         $(this).css({left: Math.random() * ($(window).outerWidth() - $(this).outerWidth()), top: Math.random() * ($(window).outerHeight() - $(this).outerHeight())});
         var conflict = false;
-        var thi = $(this)
+        var thi = $(this);
         thi.siblings().each(function() {
             if (conflict)
                 return;
@@ -184,4 +184,5 @@ $(document).ready(function() {
     add_fish();
     
     $(window).mousemove(function(evt) { move_duck(evt.pageX, evt.pageY);});
+    $(window).mousemove();
 });
