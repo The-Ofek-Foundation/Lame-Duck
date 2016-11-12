@@ -1,10 +1,10 @@
-var fish = document.getElementById("fish-images").children;
+var fish = getElemId("fish-images").children;
 var wrapperTop;
 var maxScore = 25;
 
 setInterval(function () {
 	var elems = document.getElementsByClassName("fish");
-	var duck = $(document.getElementById("duck"));
+	var duck = $(getElemId("duck"));
 	var e1, e2;
 	if (Math.random() > 0.9)
 	for (var i = 0; i < elems.length - 1; i++) {	// check overlapping fish
