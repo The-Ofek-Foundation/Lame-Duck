@@ -136,28 +136,43 @@ function elemOverlap(elema, elemb){
 	return true;
 }
 
-function moveElem(elem, x, y, distance, speed, callback)	{
-	$elem = $(elem);
-	$elem.clearQueue();
-	$elem.animate(
-		{left: x + 'px', top: y + 'px'},
-		{
-			duration: distance * speed, easing: "linear", complete: function() {
-			setElemStyle(elem, {
-				'left': x + 'px',
-				'top': y + 'px',
-			});
+var duckTO;
+
+function moveElem(elem, x, y, dx, dy, speed, callback)	{
+
+	var left = x - dx;
+	var top = y - dy;
+	var distance = calcDist(dx, dy);
+
+	var id;
+
+	if (elem == duck) {
+		clearInterval(duckTO);
+		duckTO = setInterval(frame, speed);
+	} else id = setInterval(frame, speed); // draw every 10ms
+
+
+	dx = dx / distance;
+	dy = dy / distance;
+
+	function frame() {
+
+		left += dx;
+		top += dy;
+
+		elem.style.left = left + 'px'; // show frame
+		elem.style.top = top + 'px'; // show frame
+
+		if (left >= x && left - dx < x || left <= x && left - dx > x) {  // check finish condition
+			elem.style.left = x + 'px'; // show frame
+			elem.style.top = y + 'px';
+			if (elem == duck)
+				clearInterval(duckTO);
+			else clearInterval(id);
 			if (callback)
 				callback(elem);
-		},
-		// step: function() {
-			// elem.data('count', elem.data('count') + 1);
-			// if (elem.data('count') % 10 === 0)
-			//	 if (elem == duck)
-			//		 resizeElem(elem, getElemWidth(elem) * 0.999, elem.data('ratio'));
-			//	 else resizeElem(elem, getElemWidth(elem) * 0.9999, elem.data('ratio'));
-		// }
-	});
+		}
+	}
 }
 
 function moveDuck(x, y)	{
@@ -168,7 +183,7 @@ function moveDuck(x, y)	{
 	rotateDuck(Math.atan2(dy, dx));
 	count++;
 	if (count % 5 === 0)
-		moveElem(duck, x, y, calcDist(dx, dy), getDuckSpeed());
+		moveElem(duck, x, y, dx, dy, getDuckSpeed());
 }
 
 function moveFish(fish) {
@@ -185,7 +200,7 @@ function moveFish(fish) {
 		y = wrapperTop;
 	else if (y > getElemHeight(contentWrapper) - getElemHeight(fish))
 		y = getElemHeight(contentWrapper) - getElemHeight(fish) - Math.abs(dy);
-	moveElem(fish, x, y, calcDist(dx, dy), getFishSpeed(fish), moveFish);
+	moveElem(fish, x, y, dx, dy, getFishSpeed(fish), moveFish);
 }
 
 function addFish() {
@@ -232,8 +247,6 @@ function pageReady() {
 	addFish();
 
 	wrapperTop = contentWrapper.offsetTop;
-
-	$(window).mousemove();
 }
 
 document.addEventListener('mousemove', function (evt) {
